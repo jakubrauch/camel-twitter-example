@@ -1,0 +1,30 @@
+version: '2'
+services:
+  camel-filesystem-2:
+    image: camel-filesystem
+    ports:
+     - "8883:8882"
+    volumes:
+     - ./target/fs-2:/target/fs
+  camel-filesystem-1:
+    image: camel-filesystem
+    ports:
+     - "8882:8882"
+    volumes:
+     - ./target/fs-1:/target/fs
+  camel-twitter:
+    image: camel-twitter
+    ports:
+     - "8881:8881"
+  camel-ws:
+    image: camel-ws
+    ports:
+     - "8880:8880"
+    links:
+     - camel-twitter
+     - camel-filesystem-1
+     - camel-filesystem-2
+    environment:
+     - TWITTER_HOST=camel-twitter
+     - FILESYSTEM1_HOST=camel-filesystem-1
+     - FILESYSTEM2_HOST=camel-filesystem-2
