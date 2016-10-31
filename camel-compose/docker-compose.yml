@@ -26,5 +26,4 @@ services:
      - camel-filesystem-2
     environment:
      - TWITTER_HOST=camel-twitter
-     - FILESYSTEM1_HOST=camel-filesystem-1
-     - FILESYSTEM2_HOST=camel-filesystem-2
+     - WS_RECIPIENT_LIST=http://camel-filesystem-1:8882/filesystem/,http://camel-filesystem-2:8882/filesystem/

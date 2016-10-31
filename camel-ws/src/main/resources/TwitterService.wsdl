@@ -8,7 +8,7 @@
 
   <xs:complexType name="findTweets">
     <xs:sequence>
-      <xs:element maxOccurs="unbounded" minOccurs="0" name="arg0" type="xs:string"/>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="query" type="xs:string"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -34,11 +34,11 @@
 </xs:schema>
   </wsdl:types>
   <wsdl:message name="findTweets">
-    <wsdl:part element="tns:findTweets" name="parameters">
+    <wsdl:part element="tns:findTweets" name="findTweets">
     </wsdl:part>
   </wsdl:message>
   <wsdl:message name="findTweetsResponse">
-    <wsdl:part element="tns:findTweetsResponse" name="parameters">
+    <wsdl:part element="tns:findTweetsResponse" name="findTweetsResponse">
     </wsdl:part>
   </wsdl:message>
   <wsdl:portType name="TwitterService">

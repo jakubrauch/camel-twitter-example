@@ -25,22 +25,26 @@ import java.util.stream.Collectors;
  */
 public class WsRouteBuilder extends RouteBuilder {
 
+    public static final String INBOUND_URI = "cxf://http://0.0.0.0:{{local.port}}";
+    public static final String TWITTER_URI = "http4:{{env:TWITTER_HOST:localhost}}:{{twitter.port}}";
+
     /**
      * Let's configure the Camel routing rules using Java code...
      */
     public void configure() {
-        from("cxf://http://0.0.0.0:{{local.port}}?serviceClass=" + WsTwitterService.class.getName())
+        from(INBOUND_URI + "?serviceClass=" + WsTwitterService.class.getName())
                 .marshal().xmljson() // convert xml to json
-                .transform().jsonpath("$.arg0") // extract arg0 contents
+                .transform().jsonpath("$.query") // extract arg0 contents
                 .removeHeaders("*")
                 .setHeader(Exchange.HTTP_METHOD, new SimpleExpression("GET"))
-                .toD("http4://{{env:TWITTER_HOST}}:{{twitter.port}}/twitter/${body}")
+                // Note, prefer HTTP_PATH + to(<uri>) instead of toD(<uri with path>) for easier unit testing
+                .setHeader(Exchange.HTTP_PATH, new SimpleExpression("/twitter/${body}"))
+                .to(TWITTER_URI)
+                .removeHeader(Exchange.HTTP_PATH)
                 .convertBodyTo(byte[].class) // load input stream to memory
                 .setHeader(Exchange.HTTP_METHOD, new SimpleExpression("POST"))
-                .multicast().to(
-                    "http4://{{env:FILESYSTEM1_HOST}}:{{filesystem1.port}}/filesystem/",
-                    "http4://{{env:FILESYSTEM2_HOST}}:{{filesystem2.port}}/filesystem/")
-                .end()
+                .setHeader("recipientList", new SimpleExpression("{{env:WS_RECIPIENT_LIST:http4://localhost:8882/filesystem/}}"))
+                .recipientList().header("recipientList")
                 .transform().constant(null);
     }
 }
