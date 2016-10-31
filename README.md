@@ -42,7 +42,7 @@ An example of SOAP request accepted by this service is as follows:
 ```xml
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
 <soap:Body>
-  <getTweets><arg0>test</arg0></getTweets>
+  <getTweets><query>test</query></getTweets>
 </soap:Body>
 </soap:Envelope>
 ```
